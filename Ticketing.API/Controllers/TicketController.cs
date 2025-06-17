@@ -2,7 +2,9 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Ticketing.Core.DTOs;
+using Ticketing.Core.Enums;
 using Ticketing.Core.IServices;
+using Ticketing.Core.Models;
 
 namespace Ticketing.API.Controllers
 {
@@ -19,6 +21,13 @@ namespace Ticketing.API.Controllers
             _mapper = mapper;
         }
 
+        [HttpGet]
+        public async Task<ActionResult<PagedResult<TicketDto>>> GetAll([FromQuery] TicketFilter filter)
+        {
+            var result = await _ticketService.GetAllAsync(filter);
+            return Ok(result);
+        }
+
         [HttpGet("{id}")]
         public async Task<ActionResult<TicketDto>> GetById(int id)
         {
@@ -26,7 +35,7 @@ namespace Ticketing.API.Controllers
             if (ticket == null)
                 return NotFound();
 
-            return Ok(_mapper.Map<TicketDto>(ticket));
+            return Ok(ticket);
         }
 
         [HttpPost]
@@ -51,6 +60,24 @@ namespace Ticketing.API.Controllers
             if (!success) return NotFound();
             return NoContent();
         }
+
+        [HttpPatch("{id}/status")]
+        public async Task<IActionResult> ChangeStatus(int id, [FromBody] TicketStatus status)
+        {
+            var success = await _ticketService.ChangeStatusAsync(id, status);
+            if (!success) return NotFound();
+            return NoContent();
+        }
+
+        [HttpPatch("{id}/assign")]
+        public async Task<IActionResult> AssignTicket(int id, [FromBody] int? assignedToUserId)
+        {
+            var success = await _ticketService.AssignTicketAsync(id, assignedToUserId);
+            if (!success) return NotFound();
+            return NoContent();
+        }
+
     }
+
 
 }

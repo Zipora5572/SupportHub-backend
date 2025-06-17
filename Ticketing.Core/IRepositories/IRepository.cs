@@ -8,7 +8,7 @@ namespace Ticketing.Core.IRepositories
 {
     public interface IRepository<T> where T : class
     {
-        Task<IEnumerable<T>> GetAllAsync();
+        IQueryable<T> GetAll();
 
         Task<T?> GetByIdAsync(int id);
 
