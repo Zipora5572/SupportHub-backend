@@ -26,10 +26,11 @@ public class Repository<T> : IRepository<T> where T : class
         await Task.CompletedTask; 
     }
 
-    public async Task<IEnumerable<T>> GetAllAsync()
+    public IQueryable<T> GetAll()
     {
-        return await _dbSet.ToListAsync();
+        return _dbSet.AsQueryable();
     }
+
 
     public async Task<T?> GetByIdAsync(int id)
     {

@@ -10,12 +10,12 @@ namespace Ticketing.Core.DTOs
         TicketStatus Status,
         TicketPriority Priority,
         TicketCategory Category,
-        string? AssignedTo,
         DateTime? DueDate,
         double? ResolutionTime,
         int? SatisfactionRating,
-        List<string>? Tags,
         double? AiCategoryConfidence,
-        DateTime? LastActivity
+        DateTime? LastActivity,
+        int CreatedByUserId,
+        int? AssignedToUserId
     );
 }

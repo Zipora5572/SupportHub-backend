@@ -19,6 +19,14 @@ namespace Ticketing.API.Controllers
             _mapper = mapper;
         }
 
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<TicketDto>>> GetAll([FromQuery] TicketFilter filter)
+        {
+            var tickets = await _ticketService.GetAllAsync(filter);
+            return Ok(tickets);
+        }
+
+
         [HttpGet("{id}")]
         public async Task<ActionResult<TicketDto>> GetById(int id)
         {

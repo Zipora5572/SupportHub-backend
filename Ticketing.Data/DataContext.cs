@@ -1,14 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Ticketing.Core.Entities;
 
 namespace Ticketing.Data
 {
-
     public class DataContext : DbContext, IDataContext
     {
         public DataContext(DbContextOptions<DataContext> options)
@@ -16,14 +10,29 @@ namespace Ticketing.Data
         {
         }
 
-        public DbSet<Ticket> Tickets { get; set; }
-        public DbSet<User> Users { get; set; }
+        public DbSet<Ticket> Tickets { get; set; } = null!;
+        public DbSet<User> Users { get; set; } = null!;
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<Ticket>()
+                .HasOne(t => t.CreatedByUser)
+                .WithMany(u => u.CreatedTickets)
+                .HasForeignKey(t => t.CreatedByUserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Ticket>()
+                .HasOne(t => t.AssignedToUser)
+                .WithMany(u => u.AssignedTickets)
+                .HasForeignKey(t => t.AssignedToUserId)
+                .OnDelete(DeleteBehavior.SetNull);
+        }
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
             return base.SaveChangesAsync(cancellationToken);
         }
-
     }
-
 }
